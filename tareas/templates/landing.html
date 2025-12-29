@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row align-items-center rounded-4 p-5 position-relative overflow-hidden hero-bg shadow-lg">
+        
+        <div class="shape-circle shape-1"></div>
+        <div class="shape-circle shape-2"></div>
+
+        <div class="col-lg-6 position-relative z-2 text-white py-4">
+            
+            <div class="d-inline-block border border-white border-opacity-25 rounded-pill px-3 py-1 mb-4 backdrop-blur">
+                <small class="fw-bold text-uppercase tracking-wide">🚀 MyList v1.0</small>
+            </div>
+
+            <h1 class="display-4 fw-bolder mb-3">
+                Organiza tu día, <br>
+                <span class="text-gradient-cyan">potencia tu futuro.</span>
+            </h1>
+            
+            <p class="lead mb-5 text-white text-opacity-75 fw-light" style="max-width: 90%;">
+                MyList combina la simplicidad de una lista de tareas con un sistema de progreso inteligente. 
+                Mantén el enfoque, cumple tus plazos y visualiza tu crecimiento diario.
+            </p>
+            
+            <div class="d-flex gap-3 flex-wrap">
+                <a href="{% url 'signup' %}" class="btn btn-light btn-lg px-5 py-3 rounded-3 fw-bold shadow-sm hover-lift text-primary">
+                    Crear cuenta gratis
+                </a>
+                <a href="{% url 'signin' %}" class="btn btn-outline-light btn-lg px-4 py-3 rounded-3 fw-bold hover-lift">
+                    Iniciar Sesión
+                </a>
+            </div>
+
+            <div class="mt-5 pt-2 border-top border-white border-opacity-10 d-flex align-items-center gap-3">
+                <div class="d-flex text-warning fs-5">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill ms-1"></i>
+                    <i class="bi bi-star-fill ms-1"></i>
+                    <i class="bi bi-star-fill ms-1"></i>
+                    <i class="bi bi-star-fill ms-1"></i>
+                </div>
+                <p class="small text-white text-opacity-75 mb-0">La herramienta favorita de estudiantes.</p>
+            </div>
+        </div>
+
+        <div class="col-lg-6 d-flex justify-content-center align-items-center position-relative z-2 mt-5 mt-lg-0">
+            
+            <div class="visual-container">
+                <div class="task-card-mockup glass-effect shadow-lg">
+                    <div class="d-flex align-items-center mb-3 border-bottom border-white border-opacity-25 pb-2">
+                        <div class="circle-btn bg-danger me-2"></div>
+                        <div class="circle-btn bg-warning me-2"></div>
+                        <div class="circle-btn bg-success"></div>
+                        <span class="ms-auto small text-white opacity-75">Mis Pendientes</span>
+                    </div>
+                    <div class="fake-item mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> <span>Proyecto Final</span></div>
+                    <div class="fake-item mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> <span>Estudiar Estadística</span></div>
+                    <div class="fake-item active"><i class="bi bi-circle text-white me-2"></i> <span>Enviar Reporte</span></div>
+                </div>
+
+                <div class="rocket-container">
+                    <i class="fas fa-rocket text-white display-1 drop-shadow-icon"></i>
+                </div>
+
+                <div class="floating-badge bg-white text-primary shadow">
+                    <span class="fw-bold">+50 XP</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container py-5 mt-4">
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="p-4 h-100 rounded-4 border bg-white hover-border-primary transition-all">
+                <div class="icon-square bg-primary bg-opacity-10 text-primary mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="bi bi-trophy-fill fs-4"></i>
+                </div>
+                <h5 class="fw-bold">Sistema de Niveles</h5>
+                <p class="text-muted small">Gana XP con cada tarea completada, sube de nivel y mantén la motivación al máximo.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="p-4 h-100 rounded-4 border bg-white hover-border-primary transition-all">
+                <div class="icon-square bg-success bg-opacity-10 text-success mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="bi bi-check2-square fs-4"></i>
+                </div>
+                <h5 class="fw-bold">Gestión Eficaz</h5>
+                <p class="text-muted small">Categorías por colores, prioridades y fechas límite para ordenar tu caos diario.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="p-4 h-100 rounded-4 border bg-white hover-border-primary transition-all">
+                <div class="icon-square bg-warning bg-opacity-10 text-warning mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="bi bi-bell-fill fs-4"></i>
+                </div>
+                <h5 class="fw-bold">Recordatorios</h5>
+                <p class="text-muted small">Notificaciones automáticas por correo cada mañana para que nunca olvides una entrega.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* 1. FONDO DEGRADADO */
+    .hero-bg {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    }
+
+    .text-gradient-cyan {
+        background: linear-gradient(to right, #22d3ee, #93c5fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+    }
+
+    /* 2. COMPOSICIÓN VISUAL */
+    .visual-container {
+        position: relative;
+        width: 350px;
+        height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 20px;
+        width: 280px;
+        transform: rotate(-5deg);
+        transition: transform 0.5s ease;
+    }
+
+    .fake-item {
+        background: rgba(255,255,255,0.1);
+        border-radius: 6px;
+        padding: 8px 12px;
+        color: white;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+    }
+    .fake-item.active { background: rgba(255,255,255,0.25); font-weight: bold; }
+    .circle-btn { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* Cohete */
+    .rocket-container {
+        position: absolute;
+        right: -20px;
+        top: -30px;
+        animation: float-rocket 4s ease-in-out infinite;
+        z-index: 10;
+    }
+    
+    .drop-shadow-icon {
+        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+    }
+
+    /* Badge flotante */
+    .floating-badge {
+        position: absolute;
+        bottom: 40px;
+        left: -10px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        animation: float-badge 5s ease-in-out infinite;
+        animation-delay: 1s;
+    }
+
+    /* 3. ANIMACIONES */
+    @keyframes float-rocket {
+        0%, 100% { transform: translateY(0) rotate(15deg); }
+        50% { transform: translateY(-20px) rotate(20deg); }
+    }
+    @keyframes float-badge {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; transition: all 0.3s; }
+    .transition-all { transition: all 0.3s ease; }
+    .hover-border-primary:hover { border-color: #4f46e5 !important; transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+    /* 4. DECORACIÓN DE FONDO */
+    .shape-circle { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; }
+    .shape-1 { width: 300px; height: 300px; background: #22d3ee; top: -100px; right: -50px; }
+    .shape-2 { width: 200px; height: 200px; background: #ec4899; bottom: -50px; left: -50px; }
+    
+    .tracking-wide { letter-spacing: 1px; }
+    .backdrop-blur { backdrop-filter: blur(5px); }
+</style>
+
+{% endblock %}

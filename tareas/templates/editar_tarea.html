@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-5">
+                
+                <h3 class="fw-bold mb-4 text-center">✏️ Editar Tarea</h3>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">{{ field.label }}</label>
+                        <div class="input-group">
+                            {{ field }} 
+                        </div>
+                        {% if field.help_text %}
+                        <small class="text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-warning text-dark fw-bold btn-lg">Guardar Cambios</button>
+                        <a href="{% url 'home' %}" class="btn btn-link text-muted text-decoration-none">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(function(input) {
+        input.classList.add('form-control', 'bg-light');
+    });
+</script>
+
+{% endblock %}

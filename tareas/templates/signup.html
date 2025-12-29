@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow rounded-4">
+            <div class="card-body p-5">
+                
+                <h2 class="text-center fw-bold mb-4">Crear Cuenta 🚀</h2>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">{{ field.label }}</label>
+                            <div class="input-group">
+                                {{ field }}
+                            </div>
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                            {% endif %}
+                            
+                            {% if field.help_text %}
+                                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button class="btn btn-primary w-100 py-2 mt-4" type="submit">Registrarse</button>
+                </form>
+
+                <p class="text-center mt-3">
+                    ¿Ya tienes cuenta? <a href="{% url 'signin' %}">Inicia Sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Estilo para los inputs
+    document.querySelectorAll('input').forEach(input => input.classList.add('form-control', 'bg-light'));
+</script>
+{% endblock %}

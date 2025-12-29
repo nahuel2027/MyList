@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow rounded-4">
+            <div class="card-body p-5">
+                
+                <h2 class="text-center fw-bold mb-4">Iniciar Sesión</h2>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de usuario</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    {% load socialaccount %}
+
+                    <div class="mb-3 text-center">
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-outline-dark w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 20px; height: 20px;">
+                            Continuar con Google
+                        </a>
+                    </div>
+
+                    <div class="text-center text-muted my-3">
+                        <small>— O ingresa con tu email —</small>
+                    </div>
+                    <button class="btn btn-primary w-100 py-2 mt-3" type="submit">Ingresar</button>
+                    
+                    <div class="text-center mt-3">
+                        <a href="{% url 'solicitar_recuperacion' %}" class="small text-muted">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+
+                </form>
+
+                <hr class="my-4">
+
+                <p class="text-center mb-0">
+                    ¿No tienes cuenta? <a href="{% url 'signup' %}" class="fw-bold">Regístrate</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

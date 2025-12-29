@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My List</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/zephyr/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f4f6f8; transition: 0.3s; }
+        
+        /* --- ESTILOS DE BARRA LATERAL --- */
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+            border-right: 1px solid rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1000;
+            width: 260px;
+            padding-top: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow-x: visible;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.collapsed { width: 80px; }
+        
+        .sidebar .text-hide-mini {
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+        .sidebar.collapsed .text-hide-mini {
+            opacity: 0; pointer-events: none; display: none;
+        }
+        
+        .sidebar.collapsed .nav-link {
+            justify-content: center; padding: 0.8rem 0; margin: 0 0.5rem; border-radius: 10px;
+        }
+        .sidebar.collapsed .nav-link i { margin-right: 0; font-size: 1.5rem; }
+        
+        .sidebar.collapsed .btn-nueva-tarea {
+            width: 50px; height: 50px; padding: 0; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; margin: 0 auto;
+        }
+
+        .btn-toggle-sidebar {
+            position: absolute; top: 1.5rem; right: 1.2rem;
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            background-color: transparent; color: #adb5bd; border: 1px solid transparent;
+            transition: all 0.2s; cursor: pointer; z-index: 10;
+        }
+        .btn-toggle-sidebar:hover { background-color: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+        .sidebar.collapsed .btn-toggle-sidebar { right: 0; left: 0; margin: 0 auto; }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .content-with-sidebar { 
+            margin-left: 260px; padding: 2rem; min-height: 100vh; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex; flex-direction: column;
+        }
+        .content-with-sidebar.collapsed { margin-left: 80px; }
+        .content-full { 
+            margin-left: 0; padding: 0; min-height: 100vh; 
+            display: flex; flex-direction: column;
+        }
+        
+        .page-content-wrapper { flex: 1; }
+
+        .nav-link {
+            color: #6c757d; font-weight: 500; padding: 0.8rem 1.5rem;
+            border-radius: 0 50px 50px 0; margin-right: 1rem; transition: all 0.2s;
+            display: flex; align-items: center;
+        }
+        .nav-link:hover { color: #3459e6; background-color: rgba(52, 89, 230, 0.05); }
+        .nav-link.active {
+            color: #3459e6; background-color: rgba(52, 89, 230, 0.1); font-weight: 600; border-left: 4px solid #3459e6;
+        }
+        .nav-link i { margin-right: 10px; font-size: 1.2rem; }
+
+        @media (max-width: 991.98px) {
+            .sidebar { transform: translateX(-100%); width: 280px; }
+            .sidebar.show { transform: translateX(0); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+            .content-with-sidebar, .content-with-sidebar.collapsed { margin-left: 0; padding: 1rem; padding-top: 5rem; }
+            .navbar-mobile { display: flex !important; }
+            .btn-toggle-sidebar { display: none !important; }
+        }
+        .navbar-mobile { display: none; }
+
+        /* --- PARCHE MODO OSCURO --- */
+        [data-bs-theme="dark"] body { background-color: #121212 !important; color: #e0e0e0 !important; }
+        [data-bs-theme="dark"] .sidebar { background: #1e1e1e; border-right: 1px solid #333; }
+        [data-bs-theme="dark"] .nav-link { color: #adb5bd; }
+        [data-bs-theme="dark"] .nav-link:hover, [data-bs-theme="dark"] .nav-link.active { background-color: rgba(255,255,255,0.05); color: #fff; border-left-color: #fff; }
+        [data-bs-theme="dark"] .text-dark { color: #adb5bd !important; }
+        [data-bs-theme="dark"] .btn-link.text-dark:hover { color: #fff !important; }
+        [data-bs-theme="dark"] .card, [data-bs-theme="dark"] .bg-white, [data-bs-theme="dark"] .bg-light { background-color: #1e1e1e !important; border-color: #333 !important; color: #fff !important; }
+        [data-bs-theme="dark"] .form-control, [data-bs-theme="dark"] .form-select { background-color: #2c2c2c !important; border-color: #444; color: #fff; }
+        [data-bs-theme="dark"] .navbar-mobile, [data-bs-theme="dark"] .navbar-landing { background-color: #1e1e1e !important; border-bottom: 1px solid #333; }
+        [data-bs-theme="dark"] .dropdown-menu { background-color: #2c2c2c !important; border-color: #444; }
+        [data-bs-theme="dark"] .dropdown-item { color: #eee !important; }
+        [data-bs-theme="dark"] .dropdown-item:hover { background-color: #444 !important; }
+        [data-bs-theme="dark"] .fc-theme-standard td { border-color: #444 !important; }
+        
+        [data-bs-theme="dark"] .btn-light { background-color: #0d6efd !important; color: #ffffff !important; border: 1px solid #0d6efd !important; }
+        [data-bs-theme="dark"] .btn-light:hover { background-color: #0b5ed7 !important; color: #ffffff !important; }
+        
+        /* Footer en Dark Mode: Texto Blanco */
+        [data-bs-theme="dark"] footer p, 
+        [data-bs-theme="dark"] footer span.text-muted { color: #aaa !important; }
+        [data-bs-theme="dark"] footer strong { color: #fff !important; }
+        
+        .hover-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important; }
+    </style>
+</head>
+<body>
+
+    {% if user.is_authenticated %}
+        
+        <nav class="navbar navbar-mobile fixed-top bg-white px-3 py-2 shadow-sm align-items-center justify-content-between">
+            <button class="btn btn-link text-dark p-0" onclick="toggleMobileSidebar()">
+                <i class="bi bi-list fs-1"></i>
+            </button>
+            <span class="fw-bold text-primary fs-5"><i class="bi bi-check-circle-fill"></i> My List</span>
+            <form action="{% url 'logout' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link text-danger p-0"><i class="bi bi-box-arrow-right fs-4"></i></button>
+            </form>
+        </nav>
+
+        <div class="sidebar d-flex flex-column" id="sidebar">
+            <button class="btn-toggle-sidebar d-none d-lg-flex" onclick="toggleDesktopSidebar()" title="Contraer barra">
+                <i class="bi bi-layout-sidebar" id="icon-collapse"></i>
+            </button>
+
+            <div class="px-4 mb-4 mt-1">
+                <a href="{% url 'home' %}" class="text-decoration-none">
+                    <div class="text-hide-mini overflow-hidden hover-scale-small" style="transition: transform 0.2s;">
+                        <h4 class="fw-bold text-primary mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-check-circle-fill"></i> My List
+                        </h4>
+                        <small class="text-muted ms-1 small">Versión 1.0.0</small>
+                    </div>
+                </a>
+            </div>
+
+            <ul class="nav flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}" title="Dashboard">
+                        <i class="bi bi-grid"></i> <span class="text-hide-mini">Dashboard</span>
+                    </a>
+                </li>
+                 <li class="nav-item">
+                    <a href="{% url 'ranking' %}" class="nav-link {% if 'ranking' in request.path %}active{% endif %}" title="Ranking">
+                        <i class="bi bi-trophy"></i> <span class="text-hide-mini">Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'calendario' %}" class="nav-link {% if 'calendario' in request.path %}active{% endif %}" title="Calendario">
+                        <i class="bi bi-calendar-week"></i> <span class="text-hide-mini">Calendario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'notas' %}" class="nav-link {% if 'notas' in request.path %}active{% endif %}" title="Apuntes">
+                        <i class="bi bi-sticky"></i> <span class="text-hide-mini">Apuntes</span>
+                        <span class="badge bg-warning text-dark ms-auto float-end rounded-pill text-hide-mini" style="font-size:0.7em">Nuevo</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'presupuesto' %}" class="nav-link {% if 'presupuesto' in request.path %}active{% endif %}" title="Billetera">
+                        <i class="bi bi-wallet2"></i> <span class="text-hide-mini">Billetera</span>
+                    </a>
+                </li>
+                <li class="nav-item mt-3 px-3">
+                    <a href="/crear" class="btn btn-primary w-100 rounded-pill shadow-sm fw-bold btn-nueva-tarea" title="Nueva Tarea">
+                        <i class="bi bi-plus-lg"></i> <span class="text-hide-mini ms-1">Nueva Tarea</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mt-auto px-3 pb-4">
+                
+                <a href="{% url 'perfil' %}" class="text-decoration-none">
+                    <div class="card border-0 bg-primary-subtle mb-3 text-hide-mini hover-card" style="transition: transform 0.2s;">
+                        <div class="card-body p-2 d-flex align-items-center">
+                            <div class="bg-primary text-white rounded-circle p-2 me-2 position-relative">
+                                <i class="bi bi-trophy-fill"></i>
+                                {% if user.perfil.puntos > 0 and user.perfil.xp_siguiente_nivel == 0 %}
+                                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                                {% endif %}
+                            </div>
+                            <div class="overflow-hidden">
+                                <small class="d-block fw-bold text-primary text-truncate">Nivel {{ user.perfil.nivel }}</small>
+                                <small class="text-muted d-block" style="font-size: 0.7rem;">Ver mis Trofeos &rarr;</small>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 4px; border-radius: 0 0 4px 4px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ user.perfil.xp_siguiente_nivel }}%"></div>
+                        </div>
+                    </div>
+                </a>
+                
+                <hr class="text-muted opacity-25">
+                
+                <div class="d-flex align-items-center justify-content-between px-2 flex-wrap gap-2">
+                    
+                    <button class="btn btn-link text-dark p-0" id="btn-tema" onclick="cambiarTema()" title="Cambiar Tema">
+                        <i class="bi bi-moon-stars-fill fs-5" id="icono-tema"></i>
+                    </button>
+                    
+                    <div class="dropdown dropup">
+                        <button class="btn btn-link text-dark p-0 position-relative" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell-fill fs-5"></i>
+                            {% if conteo_notificaciones > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu shadow border-0 p-2" style="width: 280px;">
+                            <li><h6 class="dropdown-header">Pendientes</h6></li>
+                            {% for noti in mis_notificaciones %}
+                                <li><a class="dropdown-item small rounded" href="{% url 'detalle_tarea' noti.id %}">{{ noti.titulo }}</a></li>
+                            {% empty %}
+                                <li class="text-center small text-muted py-2">Sin novedades 🎉</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link text-danger p-0" title="Cerrar Sesión"><i class="bi bi-box-arrow-right fs-5"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <nav class="navbar navbar-expand-lg bg-white shadow-sm navbar-landing sticky-top">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-primary" href="/">
+                    <i class="bi bi-check-circle-fill"></i> My List
+                </a>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 me-2" id="btn-tema-landing" onclick="cambiarTema()">
+                        <i class="bi bi-moon-stars-fill fs-5" id="icono-tema-landing"></i>
+                    </button>
+                    <a href="{% url 'signin' %}" class="btn btn-outline-primary rounded-pill px-4">Ingresar</a>
+                    <a href="{% url 'signup' %}" class="btn btn-primary rounded-pill px-4">Registro</a>
+                </div>
+            </div>
+        </nav>
+    {% endif %}
+
+    <main class="{% if user.is_authenticated %}content-with-sidebar{% else %}content-full{% endif %}" id="main-container">
+        <div class="d-lg-none" id="sidebar-overlay" onclick="toggleMobileSidebar()" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:900; display:none;"></div>
+        
+        <div class="container-fluid p-0 page-content-wrapper">
+            
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                            <strong>{{ message }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        {% if user.is_authenticated %}
+        <footer class="mt-5 py-4 text-center border-top bg-transparent">
+            <p class="mb-1 text-dark fw-bold" style="font-size: 0.85rem;">
+                My List 2025. Todos los derechos reservados.
+            </p>
+            <p class="mb-0 text-muted" style="font-size: 0.8rem;">
+                Versión 1.0.0 &mdash; Desarrollado por <span class="text-primary fw-bold">Nahuel Aguilera</span>
+            </p>
+        </footer>
+        {% endif %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if(sidebar) {
+                sidebar.classList.toggle('show');
+                overlay.style.display = sidebar.classList.contains('show') ? 'block' : 'none';
+            }
+        }
+
+        function toggleDesktopSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-container');
+            const icon = document.getElementById('icon-collapse');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                icon.className = 'bi bi-layout-sidebar-inset'; 
+                localStorage.setItem('sidebarState', 'collapsed');
+            } else {
+                icon.className = 'bi bi-layout-sidebar';
+                localStorage.setItem('sidebarState', 'expanded');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Restaurar estado del sidebar
+            const savedState = localStorage.getItem('sidebarState');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-container');
+            const icon = document.getElementById('icon-collapse');
+
+            if (savedState === 'collapsed' && sidebar && window.innerWidth > 991) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('collapsed');
+                if(icon) icon.className = 'bi bi-layout-sidebar-inset';
+            }
+
+            // 2. Lógica para CERRAR ALERTAS AUTOMÁTICAMENTE (Nuevo)
+            setTimeout(function() {
+                var alertas = document.querySelectorAll('.alert');
+                alertas.forEach(function(alerta) {
+                    try {
+                        var bsAlert = new bootstrap.Alert(alerta);
+                        bsAlert.close();
+                    } catch (e) {
+                        alerta.style.transition = "opacity 0.5s ease";
+                        alerta.style.opacity = 0;
+                        setTimeout(function() { alerta.remove(); }, 500);
+                    }
+                });
+            }, 5000); // 5 segundos
+        });
+
+        // Lógica del Tema (Oscuro/Claro)
+        const temaGuardado = localStorage.getItem('tema') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', temaGuardado);
+        actualizarIconos(temaGuardado);
+
+        function cambiarTema() {
+            const temaActual = document.documentElement.getAttribute('data-bs-theme');
+            const nuevoTema = temaActual === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-bs-theme', nuevoTema);
+            localStorage.setItem('tema', nuevoTema);
+            actualizarIconos(nuevoTema);
+        }
+
+        function actualizarIconos(tema) {
+            const icono = document.getElementById('icono-tema');
+            if(icono) icono.className = tema === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+            const iconoLanding = document.getElementById('icono-tema-landing');
+            if(iconoLanding) iconoLanding.className = tema === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+        }
+
+        // CONFETI: Activado solo si hay un mensaje que diga "NIVEL"
+        {% if messages %}
+            {% for message in messages %}
+                {% if "NIVEL" in message.message|upper %} 
+                   var duration = 3 * 1000;
+                   var animationEnd = Date.now() + duration;
+                   var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+                   function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+                   var interval = setInterval(function() {
+                     var timeLeft = animationEnd - Date.now();
+                     if (timeLeft <= 0) return clearInterval(interval);
+                     var particleCount = 50 * (timeLeft / duration);
+                     confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                     confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                   }, 250);
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </script>
+    
+    <audio id="sonido-exito" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" preload="auto"></audio>
+
+    <script>
+        // Si hay un mensaje de éxito (la alerta verde), reproducir sonido
+        {% if messages %}
+            {% for message in messages %}
+                {% if 'success' in message.tags %}
+                    var audio = document.getElementById("sonido-exito");
+                    if(audio) {
+                        audio.volume = 0.3; 
+                        audio.play().catch(e => console.log("Audio bloqueado por navegador"));
+                    }
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </script>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</html>

@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">📌 Mis Apuntes</h2>
+            <p class="text-muted">Ideas rápidas, recordatorios y cosas random.</p>
+        </div>
+        <button class="btn btn-primary rounded-pill px-4 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#nuevaNotaCollapse">
+            <i class="bi bi-plus-lg"></i> Nueva Nota
+        </button>
+    </div>
+
+    <div class="collapse mb-5" id="nuevaNotaCollapse">
+        <div class="card border-0 shadow-sm bg-white">
+            <div class="card-body p-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" name="titulo" class="form-control fw-bold mb-2 border-0 bg-light" placeholder="Título (opcional)...">
+                            <textarea name="contenido" class="form-control border-0 bg-light" rows="3" placeholder="Escribe tu idea aquí..." required></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small text-muted">Elige un color:</label>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <input type="radio" class="btn-check" name="color" id="c1" value="bg-warning" checked>
+                                <label class="btn btn-outline-warning rounded-circle p-3" for="c1" style="background-color: #ffc107; border:none;"></label>
+
+                                <input type="radio" class="btn-check" name="color" id="c2" value="bg-info">
+                                <label class="btn btn-outline-info rounded-circle p-3" for="c2" style="background-color: #0dcaf0; border:none;"></label>
+
+                                <input type="radio" class="btn-check" name="color" id="c3" value="bg-success">
+                                <label class="btn btn-outline-success rounded-circle p-3" for="c3" style="background-color: #198754; border:none;"></label>
+                                
+                                <input type="radio" class="btn-check" name="color" id="c4" value="bg-danger">
+                                <label class="btn btn-outline-danger rounded-circle p-3" for="c4" style="background-color: #dc3545; border:none;"></label>
+
+                                <input type="radio" class="btn-check" name="color" id="c5" value="bg-dark">
+                                <label class="btn btn-outline-dark rounded-circle p-3" for="c5" style="background-color: #212529; border:none;"></label>
+                            </div>
+                            <button type="submit" class="btn btn-dark w-100 mt-3 rounded-pill">Pegar Nota</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for nota in notas %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm hover-card text-white {{ nota.color }}" 
+                 style="transform: rotate({{ forloop.counter|divisibleby:2|yesno:'1deg,-1deg' }}); transition: transform 0.2s;">
+                <div class="card-body position-relative">
+                    
+                    <a href="{% url 'eliminar_nota' nota.id %}" 
+                       class="position-absolute top-0 end-0 m-2 text-white opacity-50 hover-opacity-100 text-decoration-none p-2"
+                       onclick="confirmarBorrado(event, this.href)"> <i class="bi bi-x-lg fs-5"></i>
+                    </a>
+
+                    {% if nota.titulo %}
+                        <h5 class="card-title fw-bold mb-2 pe-4">{{ nota.titulo }}</h5>
+                    {% endif %}
+                    
+                    <p class="card-text" style="white-space: pre-line;">{{ nota.contenido }}</p>
+                    
+                    <div class="mt-3 pt-2 border-top border-white border-opacity-25 d-flex justify-content-between align-items-center">
+                        <small class="opacity-75" style="font-size: 0.7rem;">
+                            {% if nota.destacada %}
+                                <i class="bi bi-star-fill text-warning me-1"></i> Fijada
+                            {% else %}
+                                {{ nota.creado|date:"d M" }}
+                            {% endif %}
+                        </small>
+                        
+                        <a href="{% url 'fijar_nota' nota.id %}" class="text-white text-decoration-none hover-scale" title="Fijar/Desfijar">
+                            {% if nota.destacada %}
+                                <i class="bi bi-pin-angle-fill fs-5" style="transform: rotate(45deg); display:inline-block;"></i>
+                            {% else %}
+                                <i class="bi bi-pin-angle fs-5 opacity-50 hover-opacity-100"></i>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5 text-muted">
+            <i class="bi bi-clipboard2 fs-1 d-block mb-3"></i>
+            <h3>El tablero está vacío</h3>
+            <p>¡Agrega tu primera nota arriba!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+    function confirmarBorrado(ev, url) {
+        ev.preventDefault(); // Detiene el borrado inmediato
+
+        Swal.fire({
+            title: '¿Borrar nota?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, borrar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true, // Pone el botón de borrar a la derecha
+            customClass: {
+                popup: 'rounded-4 shadow-lg border-0'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url; // Redirige si el usuario confirma
+            }
+        });
+    }
+</script>
+
+<style>
+    /* Efecto para que las notas giren un poco al pasar el mouse */
+    .hover-card:hover {
+        transform: scale(1.05) rotate(0deg) !important;
+        z-index: 10;
+        cursor: pointer;
+    }
+    .hover-opacity-100:hover { opacity: 1 !important; }
+    
+    /* Ajustes para colores específicos para que el texto se lea bien */
+    .bg-warning { background-color: #ffc107 !important; color: #212529 !important; }
+    .bg-warning .text-white { color: #212529 !important; } 
+    .bg-warning .border-white { border-color: #212529 !important; }
+    
+    .bg-info { background-color: #0dcaf0 !important; color: #212529 !important; }
+    .bg-info .text-white { color: #212529 !important; }
+    .bg-info .border-white { border-color: #212529 !important; }
+</style>
+{% endblock %}

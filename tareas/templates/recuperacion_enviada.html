@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="text-center mt-5">
+    <h1>📩 ¡Correo Enviado!</h1>
+    <p>Revisa tu bandeja de entrada. Si el correo existe en nuestro sistema, recibirás el enlace.</p>
+    <a href="{% url 'signin' %}" class="btn btn-link">Volver al Login</a>
+</div>
+{% endblock %}

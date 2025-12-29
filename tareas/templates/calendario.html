@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4 h-100 d-flex flex-column">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">📅 Mi Agenda</h2>
+            <p class="text-muted">Organiza tu mes de un vistazo.</p>
+        </div>
+        <a href="{% url 'crear_tarea' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-lg"></i> Planificar Tarea
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 flex-grow-1" style="min-height: 600px;">
+        <div class="card-body p-4">
+            <div id='calendar'></div>
+        </div>
+    </div>
+
+</div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'es',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today:    'Hoy',
+                month:    'Mes',
+                week:     'Semana',
+                day:      'Día',
+                list:     'Lista'
+            },
+            themeSystem: 'bootstrap5',
+            navLinks: true,
+            dayMaxEvents: true,
+            
+            // --- ESTA ES LA CLAVE MÁGICA ---
+            // Le dice al calendario: "No dibujes barras, dibuja puntos + texto"
+            eventDisplay: 'list-item', 
+            
+            events: '/api/tareas/',      
+            
+            eventClick: function(info) {
+                if (info.event.url) {
+                    window.location.href = info.event.url;
+                    info.jsEvent.preventDefault();
+                }
+            }
+        });
+        
+        calendar.render();
+    });
+</script>
+
+<style>
+    /* --- Estilos Generales --- */
+    #calendar {
+        font-family: var(--bs-body-font-family);
+    }
+
+    /* --- ESTILO DE LOS EVENTOS (PUNTOS) --- */
+    
+    a.fc-event {
+        text-decoration: none !important;
+        cursor: pointer;
+    }
+
+    /* El contenedor del evento */
+    .fc-daygrid-event {
+        white-space: normal !important;
+        align-items: center;
+        margin-top: 2px !important;
+        transition: transform 0.1s;
+    }
+
+    /* El PUNTO (Dot) */
+    .fc-daygrid-event-dot {
+        border-width: 4px !important;
+        margin-right: 6px !important;
+        border-radius: 50%;
+        box-shadow: none !important;
+    }
+
+    /* --- CORRECCIÓN MODO OSCURO --- */
+    /* En lugar de forzar negro (#212529), usamos la variable del cuerpo */
+    .fc-event-title {
+        color: var(--bs-body-color) !important; /* <--- ESTO ARREGLA TODO */
+        font-weight: 500;
+        font-size: 0.85em;
+    }
+
+    /* Ocultar hora */
+    .fc-event-time {
+        display: none; 
+    }
+
+    /* Hover: Un fondo sutil que sirve para claro y oscuro */
+    .fc-daygrid-event:hover {
+        background-color: var(--bs-tertiary-bg); /* Fondo adaptable */
+        transform: scale(1.02);
+        border-radius: 4px;
+    }
+
+    /* --- OTROS ESTILOS VISUALES --- */
+    
+    /* Día de hoy: Usamos una transparencia azul que se ve bien en ambos modos */
+    .fc-day-today {
+        background-color: rgba(13, 110, 253, 0.1) !important;
+    }
+
+    /* Títulos y Botones */
+    .fc-toolbar-title {
+        font-size: 1.5rem !important;
+        font-weight: 800;
+        text-transform: capitalize;
+        color: var(--bs-heading-color); /* Color adaptable del título */
+    }
+    
+    .fc-col-header-cell-cushion {
+        color: var(--bs-body-color); /* Color adaptable de los días (Lun, Mar...) */
+        text-decoration: none;
+    }
+    
+    .fc-daygrid-day-number {
+        color: var(--bs-body-color); /* Color adaptable de los números (1, 2, 3...) */
+        text-decoration: none;
+    }
+
+    .fc-button-primary {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+    }
+</style>
+
+{% endblock %}  

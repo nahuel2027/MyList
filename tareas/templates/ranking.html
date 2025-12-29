@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="text-center mb-5 fade-in-up">
+        <h1 class="fw-bold display-5">🏆 Salón de la Fama</h1>
+        <p class="text-muted lead">Los guerreros más productivos del reino.</p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0 table-hover">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4 py-3 text-uppercase text-muted small fw-bold">Rango</th>
+                                    <th class="py-3 text-uppercase text-muted small fw-bold">Jugador</th>
+                                    <th class="text-center py-3 text-uppercase text-muted small fw-bold">Nivel</th>
+                                    <th class="pe-4 text-end py-3 text-uppercase text-muted small fw-bold">XP Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for jugador in jugadores %}
+                                <tr class="{% if jugador.usuario == request.user %}bg-primary bg-opacity-10{% endif %}">
+                                    
+                                    <td class="ps-4 fw-bold text-secondary" style="width: 80px;">
+                                        {% if forloop.counter == 1 %}
+                                            <span class="fs-4">🥇</span>
+                                        {% elif forloop.counter == 2 %}
+                                            <span class="fs-4">🥈</span>
+                                        {% elif forloop.counter == 3 %}
+                                            <span class="fs-4">🥉</span>
+                                        {% else %}
+                                            <span class="badge bg-light text-dark border rounded-pill px-3">#{{ forloop.counter }}</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 fw-bold text-white shadow-sm
+                                                {% if forloop.counter == 1 %}bg-warning{% elif forloop.counter == 2 %}bg-secondary{% elif forloop.counter == 3 %}bg-danger{% else %}bg-primary{% endif %}"
+                                                style="width: 40px; height: 40px;">
+                                                {{ jugador.usuario.username|slice:":1"|upper }}
+                                            </div>
+                                            
+                                            <div>
+                                                <h6 class="mb-0 fw-bold text-dark">
+                                                    {{ jugador.usuario.first_name|default:jugador.usuario.username }}
+                                                    {% if jugador.usuario == request.user %}
+                                                        <span class="badge bg-primary ms-1" style="font-size: 0.6em;">TÚ</span>
+                                                    {% endif %}
+                                                </h6>
+                                                <small class="text-muted">{{ jugador.tareas_completadas_total }} tareas completadas</small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <span class="badge bg-dark rounded-pill px-3 py-2">Nvl {{ jugador.nivel }}</span>
+                                    </td>
+
+                                    <td class="pe-4 text-end fw-bold text-primary">
+                                        {{ jugador.puntos }} XP
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .fade-in-up { animation: fadeInUp 0.6s ease-out; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}

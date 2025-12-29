@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-5">
+                
+                <h3 class="fw-bold mb-4 text-center">Nueva Tarea</h3>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Título</label>
+                        <input type="text" name="titulo" class="form-control form-control-lg bg-light" placeholder="Ej: Comprar servidor..." required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Descripción</label>
+                        <textarea name="descripcion" class="form-control bg-light" rows="3" placeholder="Detalles extra..."></textarea>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" name="importante" class="form-check-input" id="checkImp">
+                        <label class="form-check-label" for="checkImp">Marcar como Importante 🚩</label>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="mb-4 p-3 bg-primary-subtle border border-primary-subtle rounded-3 bg-opacity-10">
+                        <label class="form-label fw-bold small text-primary mb-2">
+                            <i class="bi bi-controller"></i> Dificultad del Reto
+                        </label>
+                        {{ form.dificultad }}
+                        <div class="form-text text-muted x-small mt-2">
+                            <i class="bi bi-info-circle"></i> 
+                            Fácil = 10 XP | Media = 20 XP | Difícil = 50 XP
+                        </div>
+                        <div class="form-text text-danger x-small mt-1">
+                            <i class="bi bi-exclamation-triangle"></i> 
+                            Límite diario: Solo las primeras 3 tareas difíciles dan bono completo.
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check form-switch">
+                        <input type="checkbox" name="recordatorio_activo" class="form-check-input" id="checkRecordatorio" role="switch">
+                        <label class="form-check-label fw-bold" for="checkRecordatorio">🔔 Activar Recordatorio</label>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small text-muted">Fecha y Hora del aviso</label>
+                        <input type="datetime-local" name="fecha_recordatorio" class="form-control bg-light">
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="p-3 bg-light border rounded-3">
+                            <label class="form-label fw-bold small text-primary mb-3">
+                                <i class="bi bi-tags-fill"></i> Asignar Categoría
+                            </label>
+                            
+                            <div class="mb-3">
+                                <label class="small text-muted mb-1">Elige una de tu lista:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-list-check"></i></span>
+                                    <select name="categoria_existente" class="form-select border-start-0 ps-0">
+                                        <option value="">-- Sin asignar --</option>
+                                        {% for cat in categorias %}
+                                            <option value="{{ cat.id }}">{{ cat.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-3">
+                                <hr class="flex-grow-1 my-0 text-muted">
+                                <span class="px-2 small text-muted">O si prefieres</span>
+                                <hr class="flex-grow-1 my-0 text-muted">
+                            </div>
+
+                            <div>
+                                <label class="small text-muted mb-1">Crea una nueva al instante:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-plus-circle"></i></span>
+                                    <input type="text" name="nueva_categoria" class="form-control border-start-0 ps-0" placeholder="Ej: Gimnasio, Proyecto X...">
+                                </div>
+                                <div class="form-text text-muted x-small mt-1 ms-1">
+                                    <i class="bi bi-info-circle"></i> Se le asignará un color automáticamente.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Guardar Tarea</button>
+                        <a href="/" class="btn btn-link text-muted text-decoration-none text-center">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
