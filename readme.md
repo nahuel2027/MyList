@@ -9,21 +9,6 @@
 
 ---
 
-## 📸 Capturas del Proyecto
-
-| Landing Page | Dashboard |
-|:---:|:---:|
-| ![Landing](screenshots/landing.png) | ![Home](screenshots/dashboard.png) |
-| *Bienvenida moderna y atractiva* | *Panel principal con estadísticas* |
-
-| Modo Enfoque (Pomodoro) | Notas Rápidas |
-|:---:|:---:|
-| ![Pomodoro](screenshots/pomodoro.png) | ![Notas](screenshots/notas.png) |
-| *Timer integrado con recompensas* | *Tablero de ideas y apuntes* |
-
-> *Nota: Las imágenes se encuentran en la carpeta `screenshots/` del repositorio.*
-
----
 
 ## ✨ Características Principales
 
